@@ -1,0 +1,340 @@
+import requests
+from tkinter import *
+from bs4 import BeautifulSoup
+import matplotlib.pyplot as plt
+
+
+
+
+
+
+
+list_players = {"Virat Kohli": 253802, "Rohit Sharma": 34102, "Shikhar Dhawan": 28235, "Suresh Raina": 33335,
+                "M.S. Dhoni": 28081, "Yuvraj Singh": 36084, "Sachin Tendulkar": 35320, "Rahul Dravid": 28114,
+                "Virender Sehwag": 35263, "Sourav Ganguly": 28779, "Manish Pandey": 290630}
+def final(a,b,type):
+    list_players = {"Virat Kohli" : 253802,"Rohit Sharma" : 34102, "Shikhar Dhawan" : 28235, "Suresh Raina":33335,"M.S. Dhoni":28081, "Yuvraj Singh":36084, "Sachin Tendulkar":35320,"Rahul Dravid":28114,"Virender Sehwag":35263,"Sourav Ganguly": 28779,"Manish Pandey":290630}
+    response = requests.get("http://stats.espncricinfo.com/ci/engine/player/{}.html?class=2;template=results;type=batting;view=cumulative".format(list_players[a]))
+    response1 = requests.get("http://stats.espncricinfo.com/ci/engine/player/{}.html?class=2;template=results;type=batting;view=cumulative".format(list_players[b]))
+    soup = BeautifulSoup(response.text,"html.parser")
+#print(soup.title.text)
+    soup1 = BeautifulSoup(response1.text,"html.parser")
+
+    tTags = soup.find_all('td')
+    tTags1 = soup1.find_all('td')
+
+
+    if type == "Average":
+
+        averages = []
+        averages1 = []
+        for i in range(25,len(tTags1),17):
+            averages1.append(tTags1[i].text)
+
+        for i in range(25,len(tTags),17):
+            averages.append(tTags[i].text)
+    #ab = "\nStatsguru includes the following current or recent One-Day Internationals:\n"
+    #if ab in runs:
+    #    runs.remove(ab)
+
+    #for tag in tTags:
+    #    print(tag.text)'
+        c = '\xa0'
+        be = "\n\n\n\n\n"
+
+        if c in averages:
+            averages.remove(c)
+        elif be in averages:
+            averages.remove(be)
+
+        if c in averages1:
+            averages1.remove(c)
+        elif be in averages1:
+            averages1.remove(be)
+
+
+        for i in range(len(averages)):
+
+            if  averages[i] == '-' :
+
+                averages[i] = averages[i+1]
+            averages[i] = float(averages[i])
+
+
+        match_no = list(range(1,len(averages)+1))
+
+        for i in range(len(averages1)):
+
+            if  averages1[i] == '-' :
+
+                averages1[i] = averages1[i+1]
+            averages1[i] = float(averages1[i])
+
+
+
+        match_no1 = list(range(1,len(averages1)+1))
+
+
+
+        import matplotlib.style as style
+
+
+        plt.plot(match_no,averages,'b',label=a,linewidth = 0.5)
+        plt.plot(match_no1,averages1,'g',label=b,linewidth = 0.5)
+
+        plt.title("{} Vs. {}".format(a,b))
+        plt.xlabel("Match No")
+        plt.ylabel("Average")
+
+        plt.legend()#REpresents which line specifies which branch
+        fig = plt.gcf()
+        fig.set_size_inches(12.5, 5.5)
+        plt.grid(True, color="r")
+        plt.show()
+
+
+    elif type == "Dismissal Type":
+        dismissal = []
+        dismissal1= []
+        p1={}
+        p2={}
+        k=[]
+        k1=[]
+        p1act=[]
+        p2act=[]
+        req = requests.get("http://stats.espncricinfo.com/ci/engine/player/{}.html?class=2;template=results;type=batting;view=innings".format(list_players[a]))
+
+        req1 = requests.get("http://stats.espncricinfo.com/ci/engine/player/{}.html?class=2;template=results;type=batting;view=innings".format(list_players[b]))
+        s = BeautifulSoup(req.text, "html.parser")
+        s1 = BeautifulSoup(req1.text, "html.parser")
+        t = s.find_all('td')
+        t1 = s1.find_all('td')
+        for i in t:
+            k.append(i.text)
+        for i in range(27, len(k), 14):
+            dismissal.append(k[i])
+
+        for i in dismissal:
+            if i == '-':
+                dismissal.remove(i)
+            else:
+
+                p1[i] = dismissal.count(i)
+        hey = ['caught','bowled','lbw','run out','stumped','not out']
+        for x in hey:
+            p1act.append(p1[x])
+
+        k = sum(p1act)
+        for x in range(len(p1act)):
+            p1act[x] = ((p1act[x])/k)*100
+        for i in t1:
+            k1.append(i.text)
+        for i in range(27, len(k1), 14):
+            dismissal1.append(k1[i])
+        for i in dismissal1:
+            if i == '-':
+                dismissal1.remove(i)
+            else:
+
+                p2[i] = dismissal1.count(i)
+        for x in hey:
+            p2act.append(p2[x])
+
+        k = sum(p2act)
+        for x in range(len(p2act)):
+            p2act[x] = ((p2act[x])/k)*100
+        import numpy as np
+
+
+        # data to plot
+        n_groups = 6
+
+        # create plot
+        fig, ax = plt.subplots()
+        index = np.arange(n_groups)
+        bar_width = 0.35
+        opacity = 0.8
+
+        rects1 = plt.bar(index, p1act, bar_width,
+                         alpha=opacity,
+                         color='b',
+                         label='{}'.format(a))
+
+        rects2 = plt.bar(index + bar_width, p2act, bar_width,
+                         alpha=opacity,
+                         color='g',
+                         label='{}'.format(b))
+
+        plt.xlabel('Dismissal Type')
+        plt.ylabel('Percentage')
+        plt.title('{} Vs. {}'.format(a,b))
+        plt.xticks(index + bar_width, ('Caught', 'Bowled', 'LBW', 'Run-Out', 'Stumped', 'Not-Out'))
+        plt.legend()
+        fig = plt.gcf()
+        fig.set_size_inches(12.5, 5.5)
+        plt.tight_layout()
+        plt.show()
+
+    elif type  == "Opposition Performance":
+        req = requests.get(
+            "http://stats.espncricinfo.com/ci/engine/player/{}.html?class=2;template=results;type=batting;view=innings".format(
+                list_players[a]))
+
+        req1 = requests.get(
+            "http://stats.espncricinfo.com/ci/engine/player/{}.html?class=2;template=results;type=batting;view=innings".format(
+                list_players[b]))
+        s = BeautifulSoup(req.text, "html.parser")
+        s1 = BeautifulSoup(req1.text, "html.parser")
+        t = s.find_all('td')
+        t1 = s1.find_all('td')
+        def opPer(t):
+            d = {'Sri Lanka': 0, 'Pakistan': 0, 'Australia': 0, 'West Indies': 0, 'Bangladesh': 0, 'South Africa': 0,
+                 'Zimbabwe': 0, 'New Zealand': 0, 'England': 0, 'Ireland': 0, 'Netherlands': 0,'Scotland':0, 'Afghanistan': 0, 'Hong Kong':0,
+                 'U.A.E.': 0,'Kenya':0,'Namibia':0,'Bermuda':0,'ICC World XI':0,'Africa XI':0,}
+
+            for i in range(20, len(t) - 14, 14):
+
+                if t[i].text != "DNB" and t[i].text != 'TDNB' and t[i].text  != 'sub':
+                    k = t[i].text
+                    if k.endswith("*"):
+                        k = k.replace("*", "")
+                    k = int(k)
+                    c = t[i + 10].text[2:]
+                    d[c] = d[c] + k
+
+            return d
+
+
+            # data to plot
+
+        import numpy as np
+        n_groups = 20
+
+
+        p = opPer(t)
+        q = opPer(t1)
+
+# create plot
+        fig, ax = plt.subplots()
+        index = np.arange(n_groups)
+        bar_width = 0.35
+        opacity = 0.8
+        bb = ['Sri Lanka','Pakistan','Australia','West Indies','Bangladesh','South Africa','Zimbabwe','New Zealand','England','Ireland','Netherlands','Scotland','Afghanistan','Hong Kong','U.A.E.','Kenya','Namibia','Bermuda','ICC World XI','Africa XI']
+        w1 = []
+        w2 = []
+
+
+        for x in bb:
+            w1.append(p[x])
+            w2.append(q[x])
+
+
+
+        rects1 = plt.bar(index, w1, bar_width,
+                             alpha=opacity,
+                             color='b',
+                             label='{}'.format(a))
+
+        rects2 = plt.bar(index + bar_width, w2, bar_width,
+                             alpha=opacity,
+                             color='g',
+                             label='{}'.format(b))
+
+        plt.xlabel('Opponent')
+        plt.ylabel('Runs Scored')
+        plt.title('{} Vs. {}'.format(a, b))#,'Kenya','Namibia','Bermuda','ICC World XI','Africa XI'
+        plt.xticks(index + bar_width, ('SL', 'PAK', 'AUS','WI', 'BAN', 'RSA', 'ZIM', 'NZ', 'ENG', 'IRE', 'NTL','SCO','AFG', 'HK', 'UAE','KEN','NAM','BER','ICCWXI','AFRXI'))
+        fig = plt.gcf()
+        fig.set_size_inches(12.5, 5.5)
+        plt.legend()
+        plt.tight_layout()
+        plt.show()
+
+
+
+
+def news():
+    response = requests.get("https://sports.ndtv.com/cricket/news")
+    soup = BeautifulSoup(response.text, "html.parser")
+    tTags = soup.find_all("div", {"class": "post-title"})
+    a = []
+
+    a = [x.text for x in tTags]
+    k = len(a)
+    mid = int(k / 2)
+    news = [a[i][0:len(a[i])] for i in range(mid - 3, mid + 7)]
+
+    str = ""
+    for x in news:
+        x = x.center(len(max(news)))
+
+        str = str + x
+    return str
+
+def LiveScores():
+    response = requests.get("https://www.cricbuzz.com/cricket-match/live-scores")
+    soup = BeautifulSoup(response.text,"html.parser")
+    tTags = soup.find_all("div", {"class":"cb-mtch-lst cb-col cb-col-100 cb-tms-itm"})
+    a='      Live ScoreScorecardFull CommentaryNews'
+    score=""
+    for i in tTags:
+        k = i.text
+        k.replace("   ", "***")
+        k.replace("","\n")
+        if k.endswith(a):
+            k = k[0:len(k)-44]
+        k = k+"\n\n\n"
+        score =  score + k
+    return score
+def Schedule(a):
+    team = {"India":2,"Pakistan":3,"Australia":4,"Sri-Lanka":5,"Bangladesh":6,
+            "England":9,"Windies":10,"South-Africa":11,"Zimbabwe":12,
+            "New-Zealand":13,"Afghanistan":96,"Ireland":27}
+    response = requests.get("https://www.cricbuzz.com/cricket-team/{}/{}/schedule".format(a,team[a]))
+    soup = BeautifulSoup(response.text, "html.parser")
+
+    tTags = soup.find_all("div", {"class": "cb-col-100 cb-col cb-series-brdr "})
+
+
+    sch = ''
+    p = len(tTags)
+    iter = 15
+    if p < 15:
+        iter = p
+    for i in range(iter):
+        sch = sch + '\n' + (tTags[i].text[14:])  + "\n"
+
+    return sch
+list_players11 = {"Virat Kohli": 253802, "Rohit Sharma": 34102, "Shikhar Dhawan": 28235,
+                         "Joe Root" :303669 ,"Kane Williamson":277906, "David Warner" : 219889,"Steve Smith": 267192,
+                         "Manish Pandey": 290630}
+def bvsb(a,b):
+    response = requests.get(
+        'http://stats.espncricinfo.com/ci/engine/player/{}.html?class=2;template=results;type=batting;view=bowler_summary'.format(list_players11[a]))
+    soup = BeautifulSoup(response.text, "html.parser")
+
+    tTags = soup.find_all("td")
+    k = []
+    d = {}
+    l = 0
+    """"""
+    for i in range(20, len(tTags) - 50, 14):
+
+        l = int(tTags[i + 3].text)
+        lo = (tTags[i].text.split(" (")[0])
+        k.append(lo)
+        if l >= 1:
+            d[lo] = l
+    if b not in d:
+        return "{} has never taken {}'s wicket in ODI's.".format(b,a)
+    elif d[b] == 1:
+        return "{} has dismissed {} {} time in ODI's.".format(b,a,d[b])
+
+    else:
+        return "{} has dismissed {} {} times in ODI's.".format(b, a, d[b])
+
+
+bowl = ['KJ Abbott', 'NM Coulter-Nile', 'RJ Peterson', 'AJ McKay', 'PJ Cummins', 'HH Pandya', 'JM Anderson', 'BMAJ Mendis', 'DJ Bravo', 'A Mishra', 'DJG Sammy', 'P Utseya', 'D Bishoo', 'TM Dilshan', 'SL Malinga', 'Umar Gul', 'JH Davey', 'TG Southee', 'UWMBCA Welegedara', 'MJ Henry', 'Rumman Raees', 'Hasan Ali', 'IS Sodhi', 'M Muralitharan', 'Mohammad Irfan', 'MA Wood', 'VD Philander', 'MJ Santner', 'LL Tsotsobe', 'NLTC Perera', 'GP Swann', 'R Ashwin', 'AS Joseph', 'Rubel Hossain', 'Wahab Riaz', 'CH Morris', 'A Dananjaya', 'L Ngidi', 'BA Stokes', 'I Sharma', 'AD Mathews', 'SP Narine', 'UT Yadav', 'JW Hastings', 'JR Hazlewood', 'NL McCullum', 'T Thushara', 'JP Duminy', 'A Martin', 'M Morkel', 'JR Hopes', 'B Lee', 'CJ Anderson', 'A Shahzad', 'ST Finn', 'DJ Willey', 'JE Taylor', 'Imran Tahir', 'TA Boult', 'Sohrawordi Shuvo', 'RA Jadeja', 'TT Bresnan', 'MA Starc', 'KM Jarvis', 'K Rabada', 'Shapoor Zadran', 'R Rampaul', 'SR Patel', 'KMDN Kulasekara', 'BAW Mendis', 'Mustafizur Rahman', 'B Stanlake', 'WD Parnell', 'JP Faulkner', 'KW Richardson', 'MG Johnson', 'MM Ali', 'Shahid Afridi', 'CR Woakes', 'DW Steyn', 'Taskin Ahmed', 'N Pradeep', 'KD Mills', 'TJ Murtagh', 'Mashrafe Mortaza', 'AU Rashid', 'S Randiv', 'KAJ Roach', 'CJ McKay', 'Haris Sohail', 'HMRKB Herath', 'SCJ Broad', 'MM Patel', 'Junaid Khan', 'Shakib Al Hasan', 'JO Holder', 'MF Maharoof', 'SR Watson']
+
+def india_comp(a,b):
+    pass
