@@ -1,0 +1,251 @@
+from tkinter import *
+import Sample
+from tkinter import ttk
+root = Tk()
+root.configure(background="PeachPuff")
+root.title("Developed by : Shubham Bery")
+root.geometry("450x600")
+
+f = ("Helvetica", 44,"underline")
+f1 =("Courier", 15)
+def newsWin():
+    top = Toplevel()
+    f1 = ("Courier", 9)
+    f = ("Courier", 44, "italic")
+
+    l1 = Label(top,text="Headlines:", font=f)
+    l1.grid(row=0,columnspan=6,padx=10,pady=10)
+    l2 = Label(top,background="PeachPuff",text = Sample.news() ,font=f1)
+
+    l2.grid(row=1, columnspan=2, padx=10, pady=10)
+    width = top.winfo_screenwidth()
+    height = top.winfo_screenheight()
+    top.geometry("{}x{}".format(width, height))
+
+
+    top.configure(background="PeachPuff")
+def schWin():
+
+
+    top = Toplevel()
+
+    f = ("Courier", 44, "italic")
+    f1 = ("Courier", 22, "italic")
+
+    team = ["India","Pakistan","Australia","Sri-Lanka","Bangladesh",
+            "England", "Windies", "South-Africa", "Zimbabwe",
+            "New-Zealand", "Afghanistan", "Ireland"]
+
+    l1 = Label(top, text="Schedule", background="PeachPuff",font=f)
+    l1.grid(row=0, columnspan=2, padx=10, pady=10)
+    l2 = Label(top, text="TEAM: ",background="PeachPuff", font=f1)
+    l2.grid(row=1,column=0)
+    combo =ttk.Combobox(top,values=team,width=15,height=6)
+    combo.set("India")
+    combo.grid(row=1,column=1)
+    top.configure(background="PeachPuff")
+    def finSch():
+        top1 = Toplevel()
+        width = top.winfo_screenwidth()
+        height = top.winfo_screenheight()
+        f1 = ("Courier", 9)
+        f = ("Courier", 44, "italic")
+
+        l1 = Label(top1, text="Details:", background="PeachPuff",font=f)
+        l1.grid(row=0, columnspan=2, padx=10, pady=10)
+        l2 = Label(top1, text=Sample.Schedule(combo.get()), background="PeachPuff",font=f1)
+
+        l2.grid(row=1, columnspan=2, padx=10, pady=10)
+
+        top1.geometry("{}x{}".format(width, height))
+
+        top1.configure(background="PeachPuff")
+
+    date = Button(top, command=finSch)
+    ii = PhotoImage(file="dates.png")  # Give photo an image
+    date.config(image=ii, width="310", height="59")  # Configure the earlier instance to use the photo
+    date.image = ii
+    date.grid(row=4, columnspan=2 )
+    top.geometry("325x250")
+def resWin():
+
+    top = Toplevel()
+    f1 = ("Courier", 9)
+    f = ("Courier", 44, "italic")
+
+    l1 = Label(top, text="Live Scores:", background="PeachPuff",font=f)
+    l1.grid(row=0, columnspan=2, padx=10, pady=10)
+    l2 = Label(top, background="PeachPuff",text=Sample.LiveScores(), font=f1)
+
+    l2.grid(row=1, columnspan=2, padx=10, pady=10)
+    top.geometry("1270x600")
+    top.configure(background="PeachPuff")
+def comWin():
+    top3 = Toplevel()
+    def but1():
+        f1 = ("Helvetica", 12, "bold")
+        wind=Toplevel()
+        pic1= PhotoImage(file="Batsman.png")
+        batL = Label(wind,image=pic1,width=304,height=91)
+        batL.image=pic1
+        batL.grid(row=0,column=0,padx=5,pady=10)
+
+        pic3 = PhotoImage(file="BOWLER.png")
+        bowL = Label(wind, image=pic3, width=304,background="PeachPuff", height=91)
+        bowL.image = pic3
+        bowL.grid(row=1, column=0, padx=5, pady=10)
+        wind.geometry("1100x400")
+        wind.configure(background="PeachPuff")
+        bat_val = [x for x in Sample.list_players11]
+
+
+        def yoco():
+            bowlerp = {"Virat Kohli" : "vk.png", "Shikhar Dhawan" : "dhawan.png", "Rohit Sharma" : "rohit.png",
+                       "Steve Smith" : "smith.png", "Joe Root":"root.png","Kane Williamson" : "williamson.png",
+                        "AJ McKay" : "mckay.png", "NM Coulter-Nile":"coulter-nile.png","HH Pandya" : "pandya.png",
+                       "JM Anderson" : "anderson.png", "RJ Peterson" : "peterson.png","R Ashwin":"ashwin.png",
+                       "DW Steyn" : "steyn.png" , "R Rampaul" : "rampaul.png", "Manish Pandey": "pandey.png",
+                       "K Rabada" : "rabada.png", "KJ Abbott":"abbott.png"
+
+
+            }
+
+            win6 = Toplevel()
+            win6.geometry("550x600")
+            pica = PhotoImage(file="{}".format(bowlerp[bat_combo.get()]))
+            bow44 = Label(win6, image=pica, width=240, background="PeachPuff", height=240)
+            bow44.image = pica
+            bow44.grid(row=0, column=3, padx=0, pady=1)
+            fi = ("Courier",22,"bold")
+
+            bow45 = Label(win6, text="Vs", background="PeachPuff",font=fi)
+
+            bow45.grid(row=0, column=2, padx=0, pady=1)
+
+            picc = PhotoImage(file="{}".format(bowlerp[bowl_combo.get()]))
+            bow46 = Label(win6, image=picc, width=240, background="PeachPuff", height=240)
+            bow46.image = picc
+            bow46.grid(row=0, column=0, padx=0, pady=1)
+
+
+
+
+            finL = Label(win6, text="",background="PeachPuff", font=f1)
+
+            finL = Label(win6, text=Sample.bvsb(bat_combo.get(), bowl_combo.get()).center(90),background="PeachPuff", font=f1)
+
+            finL.grid(row=1, column=1, sticky=E)
+            width = win6.winfo_screenwidth()
+            height = win6.winfo_screenheight()
+            win6.geometry("{}x{}".format(width, height))
+            win6.configure(background="PeachPuff")
+        bat_combo = ttk.Combobox(wind,values=bat_val,width=30,height=6)
+        bowl_combo = ttk.Combobox(wind, values=Sample.bowl, width=30, height=6)
+        bat_combo.grid(row=0,column=1,padx=5, pady=10)
+        bowl_combo.grid(row=1,column=1,padx=5,pady=10)
+
+        pic5 = PhotoImage(file="sub11.png")
+        buttt = Button(wind, image=pic5,width=205,height=85,command=yoco)
+        buttt.image=pic5
+        buttt.grid(row=2,column=1,padx=5,pady=10)
+        wind.geometry("600x400")
+    def but2():
+        wind1=Toplevel()
+        wind1.geometry("910x400")
+        pic00 = PhotoImage(file="BatsmanI.png")
+        bat1 = Label(wind1, image=pic00,background="PeachPuff", width=281, height=104)
+        bat1.image = pic00
+        bat1.grid(row=0, column=0, padx=5, pady=10)
+
+        pic01 = PhotoImage(file="BatsmanII.png")
+        bat2 = Label(wind1, image=pic01, width=281,background="PeachPuff", height=104)
+        bat2.image = pic01
+        bat2.grid(row=0, column=1, padx=5, pady=10)
+
+        pic03 = PhotoImage(file="Criteria.png")
+        bat3 = Label(wind1, image=pic03, width=281, background="PeachPuff",height=104)
+        bat3.image = pic03
+        bat3.grid(row=0, column=2, padx=5, pady=10)
+        player = StringVar()
+        playerChosen = ttk.Combobox(wind1, width=16, textvariable=player, background="green", font=("Helvetica", 12))
+        # Adding Value
+        playerChosen['values'] = list(x for x in Sample.list_players)
+        playerChosen.grid(column=0, row=1)
+        compare = ["Average", "Dismissal Type", "Opposition Performance"]
+        compare_ = StringVar()
+        compare1 = ttk.Combobox(wind1, width=16, textvariable=compare_, font=("Helvetica", 12))
+        # Adding Values
+        compare1['values'] = list(x for x in compare)
+        compare1.grid(column=2, row=1)
+
+
+        # Combobox Creation
+        player1 = StringVar()
+        playerChosen1 = ttk.Combobox(wind1, width=16, textvariable=player1, background="green", font=("Helvetica", 12))
+        # Adding Values
+        playerChosen1['values'] = list(x for x in Sample.list_players)
+        playerChosen1.grid(column=1, row=1)
+
+        def onClick():
+            a = playerChosen.get()
+            b = playerChosen1.get()
+            c = compare1.get()
+            Sample.final(a, b, c)
+        butt__ = Button(wind1, command=onClick)
+        poc = PhotoImage(file="sub12.png")  # Give photo an image
+        butt__.config(image=poc, width="304", height="90")  # Configure the earlier instance to use the photo
+        butt__.image = poc
+        butt__.grid(row=3, column=1, padx=5, pady=10)
+        wind1.configure(background="PeachPuff")
+    def but3():
+        pass
+
+    butt_1 = Button(top3, command=but1)
+    p1 = PhotoImage(file="p1.png")  # Give photo an image
+    butt_1.config(image=p1, width="201", height="199")  # Configure the earlier instance to use the photo
+    butt_1.image = p1
+    butt_1.grid(row=1, column=0,padx=10, pady=10)
+
+    butt_2 = Button(top3, command=but2)
+    p2 = PhotoImage(file="p2.png")  # Give photo an image
+    butt_2.config(image=p2, width="200", height="200")  # Configure the earlier instance to use the photo
+    butt_2.image = p2
+    butt_2.grid(row=1, column=1, padx=10, pady=10)
+
+    butt_3 = Button(top3, command=but3)
+    p3 = PhotoImage(file="p3.png")  # Give photo an image
+    butt_3.config(image=p3, width="200", height="200")  # Configure the earlier instance to use the photo
+    butt_3.image = p3
+    butt_3.grid(row=1, column=3, padx=10, pady=10)
+
+    top3.geometry("700x320")
+    top3.configure(background="PeachPuff")
+one = Label(root, font = f, text="CricBuddy")
+
+one.grid(columnspan=3,pady = 20)
+
+schedule=Button(root,command=schWin)
+photo2=PhotoImage(file="Schedule.png")           # Give photo an image
+schedule.config(image=photo2,width="200",height="200")  # Configure the earlier instance to use the photo
+schedule.grid(row=2,column=1,pady=10,padx=5)
+
+news=Button(root,command=newsWin)
+photo1=PhotoImage(file="News.png")           # Give photo an image
+news.config(image=photo1,width="200",height="200")  # Configure the earlier instance to use the photo
+news.grid(row=3,column=1,pady=10,padx=5)                             # Pack up the button
+
+
+                             # Pack up the button
+compare=Button(root,command=comWin)
+photo3=PhotoImage(file="Compare.png")           # Give photo an image
+compare.config(image=photo3,width="200",height="200")  # Configure the earlier instance to use the photo
+compare.grid(row=3,column=2,pady=10)
+                             # Pack up the button
+                             # Pack up the button
+results = Button(root,command=resWin)
+photo4 = PhotoImage(file="Results.png")  # Give photo an image
+results.config(image=photo4, width="200", height="200")  # Configure the earlier instance to use the photo
+results.grid(row=2,column=2,pady=10)
+# Pack up the button
+
+root.mainloop()
